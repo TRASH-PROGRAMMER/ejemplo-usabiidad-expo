@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es" class="antialiased">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Panel Operable WCAG 2.2 - Vue & Tailwind</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1a5fb4',
+                        primaryDark: '#11407a',
+                        focusRing: '#f57900'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 font-sans">
+
+    <div id="app" class="max-w-4xl mx-auto p-4 md:p-8">
+        
+        <a href="#contenido-principal" 
+           class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:outline-none focus:ring-4 focus:ring-focusRing focus:ring-offset-2 focus:rounded-md font-bold">
+            Saltar al contenido principal
+        </a>
+
+        <header role="banner" class="border-b-2 border-gray-300 dark:border-gray-700 pb-6 mb-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-primary dark:text-blue-400">Panel de Control Operable</h1>
+                <p class="text-sm mt-1 text-gray-600 dark:text-gray-400">Cumplimiento WCAG 2.2</p>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button @click="toggleTheme" 
+                        class="min-w-[48px] min-h-[48px] p-2 bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-focusRing focus:ring-offset-2 dark:focus:ring-offset-gray-900 font-semibold flex items-center justify-center transition-all"
+                        :aria-label="isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
+                    {{ isDark ? '☀️ Claro' : '🌙 Oscuro' }}
+                </button>
+            </div>
+        </header>
+
+        <nav aria-label="Navegación Principal" class="flex flex-wrap gap-4 mb-8">
+            <a href="#seccion-ajustes" 
+               class="min-w-[48px] min-h-[48px] px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-focusRing focus:ring-offset-2 dark:focus:ring-offset-gray-900 flex items-center font-medium">
+                ⚙️ Ajustes
+            </a>
+            <a href="#seccion-interacciones" 
+               class="min-w-[48px] min-h-[48px] px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-focusRing focus:ring-offset-2 dark:focus:ring-offset-gray-900 flex items-center font-medium">
+                👆 Interacciones
+            </a>
+        </nav>
+
+        <main id="contenido-principal" class="space-y-8">
+
+            <section id="seccion-ajustes" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-semibold mb-4 border-l-4 border-primary pl-3 dark:text-white">Configuración de Accesibilidad</h2>
+                
+                <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-md mt-4 border border-blue-100 dark:border-blue-800">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="font-bold text-gray-900 dark:text-white">Sensores de movimiento</h3>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">Activa o desactiva las acciones por agitación del dispositivo.</p>
+                        </div>
+                        
+                        <button @click="toggleMotion" 
+                                :class="motionEnabled ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white'"
+                                class="min-w-[48px] min-h-[48px] px-6 py-2 rounded-md font-bold focus:outline-none focus:ring-4 focus:ring-focusRing focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors"
+                                :aria-label="motionEnabled ? 'Desactivar movimientos por agitación' : 'Activar movimientos por agitación'">
+                            {{ motionEnabled ? 'Desactivar sensores' : 'Activar sensores' }}
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="seccion-busqueda" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-semibold mb-4 border-l-4 border-primary pl-3 dark:text-white">Localizar Funciones</h2>
+                
+                <form @submit.prevent="handleSearch" class="flex flex-col sm:flex-row gap-3">
+                    <label for="buscador-sitio" class="sr-only">Buscar en el sitio</label>
+                    <input type="text" 
+                           id="buscador-sitio" 
+                           v-model="searchQuery"
+                           placeholder="Ej: 'Cómo configurar el foco'..." 
+                           class="flex-grow min-h-[48px] p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-4 focus:ring-focusRing focus:border-transparent">
+                    
+                    <button type="submit" 
+                            class="min-w-[48px] min-h-[48px] px-6 py-2 bg-primary hover:bg-primaryDark text-white rounded-md font-bold focus:outline-none focus:ring-4 focus:ring-focusRing focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors">
+                        Buscar
+                    </button>
+                </form>
+            </section>
+
+            <section id="seccion-interacciones" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-semibold mb-4 border-l-4 border-primary pl-3 dark:text-white">Interacciones Seguras</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <p class="mb-3 text-gray-700 dark:text-gray-300">
+                            <strong>Acción simple:</strong> Use este botón para confirmar, eliminando la necesidad de gestos complejos.
+                        </p>
+                        <button @click="handleConfirm" 
+                                class="min-w-[48px] min-h-[48px] px-6 py-2 bg-primary hover:bg-primaryDark text-white rounded-md font-bold focus:outline-none focus:ring-4 focus:ring-focusRing focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors shadow-md">
+                            Confirmar Acción Segura
+                        </button>
+                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                            (La acción se procesará al soltar el cursor, no al hacer clic, para evitar activaciones accidentales).
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <p class="text-gray-700 dark:text-gray-300">
+                            Para más detalles técnicos de implementación, puede 
+                            <a href="#descarga" 
+                               class="text-primary dark:text-blue-400 underline font-bold focus:outline-none focus:ring-4 focus:ring-focusRing focus:bg-yellow-100 dark:focus:bg-transparent rounded-sm px-1 py-0.5 min-h-[48px] inline-flex items-center">
+                                descargar el manual completo de Operabilidad (PDF)
+                            </a>.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="mt-12 pt-6 border-t border-gray-300 dark:border-gray-700 text-center text-gray-600 dark:text-gray-400 text-sm">
+            <p>© 2026 - Interfaz optimizada con Vue 3 y Tailwind CSS bajo criterios WCAG 2.2</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+
+        createApp({
+            setup() {
+                // Estado reactivo
+                const motionEnabled = ref(true);
+                const searchQuery = ref('');
+                const isDark = ref(false);
+
+                // Alternar sensores de movimiento (Punto 10)
+                const toggleMotion = () => {
+                    motionEnabled.value = !motionEnabled.value;
+                    // Aquí iría la lógica real para desenganchar event listeners de giroscopio
+                };
+
+                // Manejo del buscador
+                const handleSearch = () => {
+                    if (searchQuery.value.trim() !== '') {
+                        alert(`Iniciando búsqueda para: "${searchQuery.value}"`);
+                        searchQuery.value = ''; // Limpiar input
+                    }
+                };
+
+                // Confirmación de acción (Punto 7)
+                const handleConfirm = () => {
+                    alert('✅ Acción procesada correctamente tras soltar el cursor (Up-event).');
+                };
+
+                // Manejo del Modo Oscuro
+                const toggleTheme = () => {
+                    isDark.value = !isDark.value;
+                    if (isDark.value) {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
+                };
+
+                // Detectar preferencia del sistema al montar
+                onMounted(() => {
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        isDark.value = true;
+                        document.documentElement.classList.add('dark');
+                    }
+                });
+
+                return {
+                    motionEnabled,
+                    searchQuery,
+                    isDark,
+                    toggleMotion,
+                    handleSearch,
+                    handleConfirm,
+                    toggleTheme
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
