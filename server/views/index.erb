@@ -2,8 +2,8 @@
 <html lang="es" class="antialiased">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Panel Operable WCAG 2.2 - Vue & Tailwind</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel operable WCAG 2.2</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -18,178 +18,566 @@
                     }
                 }
             }
-        }
+        };
     </script>
-
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-</head>
-<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 font-sans">
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-    <div id="app" class="max-w-4xl mx-auto p-4 md:p-8">
-        
-        <a href="#contenido-principal" 
-           class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:outline-none focus:ring-4 focus:ring-focusRing focus:ring-offset-2 focus:rounded-md font-bold">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+
+        :focus-visible {
+            outline: 4px solid #f57900 !important;
+            outline-offset: 3px;
+            box-shadow: 0 0 0 2px #ffffff;
+        }
+
+        .dark :focus-visible {
+            box-shadow: 0 0 0 2px #111827;
+        }
+
+        a,
+        button,
+        input {
+            touch-action: manipulation;
+        }
+
+        section,
+        main {
+            scroll-margin-top: 1rem;
+        }
+
+        .hit-target {
+            min-width: 48px;
+            min-height: 48px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100">
+    <div id="app" v-cloak class="mx-auto max-w-5xl px-4 py-5 sm:px-6 lg:px-8">
+        <a
+            href="#contenido-principal"
+            class="sr-only z-50 rounded-md bg-primary px-4 py-3 font-bold text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+        >
             Saltar al contenido principal
         </a>
 
-        <header role="banner" class="border-b-2 border-gray-300 dark:border-gray-700 pb-6 mb-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-            <div>
-                <h1 class="text-3xl font-bold text-primary dark:text-blue-400">Panel de Control Operable</h1>
-                <p class="text-sm mt-1 text-gray-600 dark:text-gray-400">Cumplimiento WCAG 2.2</p>
-            </div>
-            
-            <div class="flex items-center gap-4">
-                <button @click="toggleTheme" 
-                        class="min-w-[48px] min-h-[48px] p-2 bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-focusRing focus:ring-offset-2 dark:focus:ring-offset-gray-900 font-semibold flex items-center justify-center transition-all"
-                        :aria-label="isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
-                    {{ isDark ? '☀️ Claro' : '🌙 Oscuro' }}
+        <header class="border-b border-slate-300 pb-5 dark:border-slate-700">
+            <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-wide text-primary dark:text-sky-300">WCAG 2.2 - Principio 2</p>
+                    <h1 class="mt-1 text-3xl font-bold leading-tight text-slate-950 dark:text-white">Panel operable</h1>
+                    <p class="mt-2 max-w-3xl text-base text-slate-700 dark:text-slate-300">
+                        Componentes navegables por teclado, voz, puntero y rutas alternativas de localizaci&oacute;n.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="hit-target inline-flex items-center justify-center gap-2 rounded-md border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
+                    :aria-pressed="isDark.toString()"
+                    @click="toggleTheme"
+                >
+                    <span data-lucide="contrast" class="h-5 w-5" aria-hidden="true"></span>
+                    <span>{{ isDark ? 'Modo claro' : 'Modo oscuro' }}</span>
                 </button>
             </div>
+
+            <nav aria-label="Ruta de navegaci&oacute;n" class="mt-5 text-sm text-slate-600 dark:text-slate-300">
+                <ol class="flex flex-wrap items-center gap-2">
+                    <li><a href="/" class="rounded-sm underline decoration-2 underline-offset-4">Inicio</a></li>
+                    <li aria-hidden="true">&gt;</li>
+                    <li aria-current="page" class="font-semibold text-slate-900 dark:text-white">Panel operable</li>
+                </ol>
+            </nav>
         </header>
 
-        <nav aria-label="Navegación Principal" class="flex flex-wrap gap-4 mb-8">
-            <a href="#seccion-ajustes" 
-               class="min-w-[48px] min-h-[48px] px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-focusRing focus:ring-offset-2 dark:focus:ring-offset-gray-900 flex items-center font-medium">
-                ⚙️ Ajustes
-            </a>
-            <a href="#seccion-interacciones" 
-               class="min-w-[48px] min-h-[48px] px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-focusRing focus:ring-offset-2 dark:focus:ring-offset-gray-900 flex items-center font-medium">
-                👆 Interacciones
-            </a>
+        <nav aria-label="Navegaci&oacute;n principal" class="my-6">
+            <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <li v-for="item in navigationItems" :key="item.href">
+                    <a
+                        :href="item.href"
+                        class="hit-target flex items-center gap-2 rounded-md border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-900 shadow-sm transition hover:border-primary hover:bg-sky-50 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:border-sky-300 dark:hover:bg-slate-800"
+                    >
+                        <span :data-lucide="item.icon" class="h-5 w-5 shrink-0" aria-hidden="true"></span>
+                        <span>{{ item.label }}</span>
+                    </a>
+                </li>
+            </ul>
         </nav>
 
-        <main id="contenido-principal" class="space-y-8">
+        <main id="contenido-principal" tabindex="-1" class="space-y-8">
+            <section id="seccion-ajustes" aria-labelledby="titulo-ajustes" class="rounded-md border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <div class="flex flex-col gap-2 border-b border-slate-200 pb-4 dark:border-slate-700">
+                    <p class="text-sm font-semibold text-primary dark:text-sky-300">Pauta 2.4 y 2.5</p>
+                    <h2 id="titulo-ajustes" class="text-2xl font-bold">Configuraci&oacute;n de accesibilidad</h2>
+                </div>
 
-            <section id="seccion-ajustes" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                <h2 class="text-2xl font-semibold mb-4 border-l-4 border-primary pl-3 dark:text-white">Configuración de Accesibilidad</h2>
-                
-                <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-md mt-4 border border-blue-100 dark:border-blue-800">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div>
-                            <h3 class="font-bold text-gray-900 dark:text-white">Sensores de movimiento</h3>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">Activa o desactiva las acciones por agitación del dispositivo.</p>
-                        </div>
-                        
-                        <button @click="toggleMotion" 
-                                :class="motionEnabled ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white'"
-                                class="min-w-[48px] min-h-[48px] px-6 py-2 rounded-md font-bold focus:outline-none focus:ring-4 focus:ring-focusRing focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors"
-                                :aria-label="motionEnabled ? 'Desactivar movimientos por agitación' : 'Activar movimientos por agitación'">
-                            {{ motionEnabled ? 'Desactivar sensores' : 'Activar sensores' }}
+                <div class="mt-5 grid gap-4 md:grid-cols-2">
+                    <div role="group" aria-labelledby="titulo-sensores" class="rounded-md border border-slate-200 p-4 dark:border-slate-700">
+                        <h3 id="titulo-sensores" class="text-lg font-bold">Acciones por movimiento</h3>
+                        <p id="estado-sensores" class="mt-2 text-sm text-slate-700 dark:text-slate-300">
+                            Estado actual: <strong>{{ motionEnabled ? 'activadas' : 'desactivadas' }}</strong>.
+                        </p>
+                        <button
+                            type="button"
+                            class="hit-target mt-4 inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 font-bold text-white transition"
+                            :class="motionEnabled ? 'bg-red-700 hover:bg-red-800' : 'bg-emerald-700 hover:bg-emerald-800'"
+                            :aria-pressed="motionEnabled.toString()"
+                            aria-describedby="estado-sensores"
+                            @click="toggleMotion"
+                        >
+                            <span data-lucide="activity" class="h-5 w-5" aria-hidden="true"></span>
+                            <span>{{ motionEnabled ? 'Desactivar sensores' : 'Activar sensores' }}</span>
                         </button>
+                    </div>
+
+                    <div role="group" aria-labelledby="titulo-foco" class="rounded-md border border-slate-200 p-4 dark:border-slate-700">
+                        <h3 id="titulo-foco" class="text-lg font-bold">Foco visible del teclado</h3>
+                        <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">
+                            Todos los enlaces, botones y campos muestran un indicador naranja de alto contraste.
+                        </p>
+                        <a
+                            href="#seccion-interacciones"
+                            class="hit-target mt-4 inline-flex items-center justify-center gap-2 rounded-md border border-primary px-4 py-2 font-bold text-primary transition hover:bg-sky-50 dark:border-sky-300 dark:text-sky-300 dark:hover:bg-slate-800"
+                        >
+                            <span data-lucide="keyboard" class="h-5 w-5" aria-hidden="true"></span>
+                            <span>Probar foco visible</span>
+                        </a>
                     </div>
                 </div>
             </section>
 
-            <section id="seccion-busqueda" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                <h2 class="text-2xl font-semibold mb-4 border-l-4 border-primary pl-3 dark:text-white">Localizar Funciones</h2>
-                
-                <form @submit.prevent="handleSearch" class="flex flex-col sm:flex-row gap-3">
-                    <label for="buscador-sitio" class="sr-only">Buscar en el sitio</label>
-                    <input type="text" 
-                           id="buscador-sitio" 
-                           v-model="searchQuery"
-                           placeholder="Ej: 'Cómo configurar el foco'..." 
-                           class="flex-grow min-h-[48px] p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-4 focus:ring-focusRing focus:border-transparent">
-                    
-                    <button type="submit" 
-                            class="min-w-[48px] min-h-[48px] px-6 py-2 bg-primary hover:bg-primaryDark text-white rounded-md font-bold focus:outline-none focus:ring-4 focus:ring-focusRing focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors">
-                        Buscar
-                    </button>
+            <section id="seccion-busqueda" aria-labelledby="titulo-busqueda" class="rounded-md border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <div class="flex flex-col gap-2 border-b border-slate-200 pb-4 dark:border-slate-700">
+                    <p class="text-sm font-semibold text-primary dark:text-sky-300">Localizaci&oacute;n de p&aacute;ginas</p>
+                    <h2 id="titulo-busqueda" class="text-2xl font-bold">Buscar o usar el mapa del sitio</h2>
+                </div>
+
+                <form class="mt-5" role="search" @submit.prevent="handleSearch">
+                    <label for="buscador-sitio" class="block text-sm font-bold text-slate-800 dark:text-slate-100">Buscar p&aacute;gina o funci&oacute;n</label>
+                    <div class="mt-2 flex flex-col gap-3 sm:flex-row">
+                        <input
+                            id="buscador-sitio"
+                            v-model="searchQuery"
+                            type="search"
+                            autocomplete="off"
+                            class="hit-target w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-slate-950 shadow-sm transition placeholder:text-slate-500 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
+                            placeholder="Ejemplo: foco, enlaces, sensores"
+                        />
+                        <button
+                            type="submit"
+                            class="hit-target inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 font-bold text-white transition hover:bg-primaryDark"
+                        >
+                            <span data-lucide="search" class="h-5 w-5" aria-hidden="true"></span>
+                            <span>Buscar</span>
+                        </button>
+                    </div>
                 </form>
+
+                <p id="estado-busqueda" class="sr-only" aria-live="polite">{{ searchStatus }}</p>
+
+                <div v-if="hasSearched" class="mt-5">
+                    <h3 ref="resultsHeading" tabindex="-1" class="text-lg font-bold">Resultados de b&uacute;squeda</h3>
+                    <ul v-if="searchResults.length" class="mt-3 grid gap-3">
+                        <li v-for="result in searchResults" :key="result.href">
+                            <a
+                                :href="result.href"
+                                class="block rounded-md border border-slate-200 p-4 transition hover:border-primary hover:bg-sky-50 dark:border-slate-700 dark:hover:border-sky-300 dark:hover:bg-slate-800"
+                                @click="focusSection(result.href)"
+                            >
+                                <span class="font-bold text-primary dark:text-sky-300">{{ result.title }}</span>
+                                <span class="mt-1 block text-sm text-slate-700 dark:text-slate-300">{{ result.description }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p v-else class="mt-3 rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-100">
+                        No se encontraron coincidencias. Use el mapa del sitio o pruebe con otra palabra.
+                    </p>
+                </div>
+
+                <div class="mt-6 rounded-md border border-slate-200 p-4 dark:border-slate-700">
+                    <h3 class="text-lg font-bold">Mapa del sitio</h3>
+                    <ul class="mt-3 grid gap-2 sm:grid-cols-2">
+                        <li v-for="item in navigationItems" :key="'mapa-' + item.href">
+                            <a
+                                :href="item.href"
+                                class="hit-target inline-flex items-center gap-2 rounded-md px-2 py-2 font-semibold text-primary underline decoration-2 underline-offset-4 dark:text-sky-300"
+                                @click="focusSection(item.href)"
+                            >
+                                <span :data-lucide="item.icon" class="h-5 w-5" aria-hidden="true"></span>
+                                <span>{{ item.label }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </section>
 
-            <section id="seccion-interacciones" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                <h2 class="text-2xl font-semibold mb-4 border-l-4 border-primary pl-3 dark:text-white">Interacciones Seguras</h2>
-                
-                <div class="space-y-6">
-                    <div>
-                        <p class="mb-3 text-gray-700 dark:text-gray-300">
-                            <strong>Acción simple:</strong> Use este botón para confirmar, eliminando la necesidad de gestos complejos.
-                        </p>
-                        <button @click="handleConfirm" 
-                                class="min-w-[48px] min-h-[48px] px-6 py-2 bg-primary hover:bg-primaryDark text-white rounded-md font-bold focus:outline-none focus:ring-4 focus:ring-focusRing focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors shadow-md">
-                            Confirmar Acción Segura
-                        </button>
-                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                            (La acción se procesará al soltar el cursor, no al hacer clic, para evitar activaciones accidentales).
+            <section id="seccion-interacciones" aria-labelledby="titulo-interacciones" class="rounded-md border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <div class="flex flex-col gap-2 border-b border-slate-200 pb-4 dark:border-slate-700">
+                    <p class="text-sm font-semibold text-primary dark:text-sky-300">Puntero y teclado</p>
+                    <h2 id="titulo-interacciones" class="text-2xl font-bold">Interacciones seguras</h2>
+                </div>
+
+                <div class="mt-5 grid gap-5 lg:grid-cols-2">
+                    <div role="group" aria-labelledby="titulo-gestos" class="rounded-md border border-slate-200 p-4 dark:border-slate-700">
+                        <h3 id="titulo-gestos" class="text-lg font-bold">Controles simples</h3>
+                        <article class="mt-3 rounded-md bg-slate-100 p-4 dark:bg-slate-800" aria-live="polite">
+                            <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">Tema {{ activeTopicIndex + 1 }} de {{ topics.length }}</p>
+                            <h4 class="mt-1 text-xl font-bold">{{ activeTopic.title }}</h4>
+                            <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">{{ activeTopic.body }}</p>
+                        </article>
+
+                        <div class="mt-4 flex flex-wrap gap-3">
+                            <button
+                                type="button"
+                                class="hit-target inline-flex items-center justify-center gap-2 rounded-md border border-slate-300 px-4 py-2 font-bold transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600 dark:hover:bg-slate-800"
+                                :disabled="activeTopicIndex === 0"
+                                @click="previousTopic"
+                            >
+                                <span data-lucide="arrow-left" class="h-5 w-5" aria-hidden="true"></span>
+                                <span>Anterior tema</span>
+                            </button>
+                            <button
+                                type="button"
+                                class="hit-target inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 font-bold text-white transition hover:bg-primaryDark disabled:cursor-not-allowed disabled:opacity-50"
+                                :disabled="activeTopicIndex === topics.length - 1"
+                                @click="nextTopic"
+                            >
+                                <span>Siguiente tema</span>
+                                <span data-lucide="arrow-right" class="h-5 w-5" aria-hidden="true"></span>
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <p class="text-gray-700 dark:text-gray-300">
-                            Para más detalles técnicos de implementación, puede 
-                            <a href="#descarga" 
-                               class="text-primary dark:text-blue-400 underline font-bold focus:outline-none focus:ring-4 focus:ring-focusRing focus:bg-yellow-100 dark:focus:bg-transparent rounded-sm px-1 py-0.5 min-h-[48px] inline-flex items-center">
-                                descargar el manual completo de Operabilidad (PDF)
-                            </a>.
+                    <div role="group" aria-labelledby="titulo-confirmacion" class="rounded-md border border-slate-200 p-4 dark:border-slate-700">
+                        <h3 id="titulo-confirmacion" class="text-lg font-bold">Confirmaci&oacute;n cancelable</h3>
+                        <p id="estado-confirmacion" class="mt-2 text-sm text-slate-700 dark:text-slate-300" aria-live="polite">
+                            {{ pointerStatus }}
+                        </p>
+                        <button
+                            type="button"
+                            class="hit-target mt-4 inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 font-bold text-white shadow-sm transition hover:bg-primaryDark"
+                            aria-describedby="estado-confirmacion"
+                            @pointerdown="beginPointerAction"
+                            @pointerleave="cancelPointerAction"
+                            @pointercancel="cancelPointerAction"
+                            @pointerup="completePointerAction"
+                            @click="completeClickAction"
+                        >
+                            <span data-lucide="check-circle" class="h-5 w-5" aria-hidden="true"></span>
+                            <span>Confirmar acci&oacute;n segura</span>
+                        </button>
+                        <p class="mt-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                            Acciones confirmadas: {{ completedActions }}
                         </p>
                     </div>
                 </div>
             </section>
 
+            <section id="seccion-enlaces" aria-labelledby="titulo-enlaces" class="rounded-md border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <div class="flex flex-col gap-2 border-b border-slate-200 pb-4 dark:border-slate-700">
+                    <p class="text-sm font-semibold text-primary dark:text-sky-300">Pauta 2.4</p>
+                    <h2 id="titulo-enlaces" class="text-2xl font-bold">Enlaces con prop&oacute;sito claro</h2>
+                </div>
+
+                <div class="mt-5 grid gap-3 sm:grid-cols-2">
+                    <a
+                        href="#seccion-busqueda"
+                        class="hit-target rounded-md border border-slate-200 p-4 font-bold text-primary underline decoration-2 underline-offset-4 transition hover:border-primary hover:bg-sky-50 dark:border-slate-700 dark:text-sky-300 dark:hover:border-sky-300 dark:hover:bg-slate-800"
+                        @click="focusSection('#seccion-busqueda')"
+                    >
+                        Buscar una secci&oacute;n del panel operable
+                    </a>
+                    <a
+                        href="#resumen-operable"
+                        class="hit-target rounded-md border border-slate-200 p-4 font-bold text-primary underline decoration-2 underline-offset-4 transition hover:border-primary hover:bg-sky-50 dark:border-slate-700 dark:text-sky-300 dark:hover:border-sky-300 dark:hover:bg-slate-800"
+                        @click="focusSection('#resumen-operable')"
+                    >
+                        Leer resumen de criterios operables WCAG 2.2
+                    </a>
+                </div>
+            </section>
+
+            <section id="resumen-operable" aria-labelledby="titulo-resumen" class="rounded-md border border-slate-300 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <div class="flex flex-col gap-2 border-b border-slate-200 pb-4 dark:border-slate-700">
+                    <p class="text-sm font-semibold text-primary dark:text-sky-300">Resumen aplicado</p>
+                    <h2 id="titulo-resumen" class="text-2xl font-bold">Criterios operables cubiertos</h2>
+                </div>
+
+                <ul class="mt-5 grid gap-3 text-sm text-slate-700 dark:text-slate-300 sm:grid-cols-2">
+                    <li class="rounded-md bg-slate-100 p-3 dark:bg-slate-800"><strong>T&iacute;tulos descriptivos:</strong> cada secci&oacute;n tiene encabezado propio y jerarqu&iacute;a H1-H2-H3.</li>
+                    <li class="rounded-md bg-slate-100 p-3 dark:bg-slate-800"><strong>M&uacute;ltiples v&iacute;as:</strong> navegaci&oacute;n principal, buscador y mapa del sitio.</li>
+                    <li class="rounded-md bg-slate-100 p-3 dark:bg-slate-800"><strong>Foco visible:</strong> indicador de teclado persistente y de alto contraste.</li>
+                    <li class="rounded-md bg-slate-100 p-3 dark:bg-slate-800"><strong>Puntero:</strong> controles de 48 px, activaci&oacute;n al soltar y cancelaci&oacute;n por salida.</li>
+                    <li class="rounded-md bg-slate-100 p-3 dark:bg-slate-800"><strong>Etiquetas accesibles:</strong> el texto visible forma parte del nombre de botones y enlaces.</li>
+                    <li class="rounded-md bg-slate-100 p-3 dark:bg-slate-800"><strong>Movimiento:</strong> los sensores se pueden activar o desactivar desde un control est&aacute;ndar.</li>
+                </ul>
+            </section>
         </main>
 
-        <footer class="mt-12 pt-6 border-t border-gray-300 dark:border-gray-700 text-center text-gray-600 dark:text-gray-400 text-sm">
-            <p>© 2026 - Interfaz optimizada con Vue 3 y Tailwind CSS bajo criterios WCAG 2.2</p>
+        <footer class="mt-10 border-t border-slate-300 py-6 text-center text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300">
+            <p>&copy; 2026 - Interfaz de ejemplo para operabilidad WCAG 2.2.</p>
         </footer>
-
     </div>
 
     <script>
-        const { createApp, ref, onMounted } = Vue;
+        const { createApp, computed, nextTick, onMounted, ref } = Vue;
+
+        const renderIcons = () => {
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                window.lucide.createIcons({
+                    attrs: {
+                        'aria-hidden': 'true',
+                        focusable: 'false'
+                    }
+                });
+            }
+        };
 
         createApp({
             setup() {
-                // Estado reactivo
+                const isDark = ref(false);
                 const motionEnabled = ref(true);
                 const searchQuery = ref('');
-                const isDark = ref(false);
+                const hasSearched = ref(false);
+                const resultsHeading = ref(null);
+                const activeTopicIndex = ref(0);
+                const completedActions = ref(0);
+                const pointerIsPending = ref(false);
+                const pointerWasCanceled = ref(false);
+                const ignoreNextClick = ref(false);
+                const pointerStatus = ref('Sin acciones recientes.');
 
-                // Alternar sensores de movimiento (Punto 10)
-                const toggleMotion = () => {
-                    motionEnabled.value = !motionEnabled.value;
-                    // Aquí iría la lógica real para desenganchar event listeners de giroscopio
-                };
-
-                // Manejo del buscador
-                const handleSearch = () => {
-                    if (searchQuery.value.trim() !== '') {
-                        alert(`Iniciando búsqueda para: "${searchQuery.value}"`);
-                        searchQuery.value = ''; // Limpiar input
+                const navigationItems = [
+                    {
+                        href: '#seccion-ajustes',
+                        icon: 'settings',
+                        label: 'Configuraci\u00f3n',
+                        title: 'Configuraci\u00f3n de accesibilidad',
+                        description: 'Modo visual, sensores y foco visible.',
+                        keywords: 'configuracion accesibilidad sensores movimiento tema foco teclado'
+                    },
+                    {
+                        href: '#seccion-busqueda',
+                        icon: 'search',
+                        label: 'B\u00fasqueda',
+                        title: 'B\u00fasqueda y mapa del sitio',
+                        description: 'Localiza p\u00e1ginas por men\u00fa, buscador o mapa del sitio.',
+                        keywords: 'busqueda mapa sitio localizar multiples vias paginas'
+                    },
+                    {
+                        href: '#seccion-interacciones',
+                        icon: 'mouse-pointer-click',
+                        label: 'Interacciones',
+                        title: 'Interacciones seguras',
+                        description: 'Controles simples y confirmacion cancelable.',
+                        keywords: 'puntero teclado gestos simple cancelacion accion segura'
+                    },
+                    {
+                        href: '#seccion-enlaces',
+                        icon: 'link',
+                        label: 'Enlaces',
+                        title: 'Enlaces con prop\u00f3sito claro',
+                        description: 'Textos de enlace descriptivos y predecibles.',
+                        keywords: 'enlaces proposito contexto texto descriptivo'
                     }
+                ];
+
+                const searchableItems = [
+                    ...navigationItems,
+                    {
+                        href: '#resumen-operable',
+                        title: 'Resumen de criterios operables WCAG 2.2',
+                        description: 'S\u00edntesis de los criterios aplicados en la interfaz.',
+                        keywords: 'resumen wcag operable criterio pauta'
+                    }
+                ];
+
+                const topics = [
+                    {
+                        title: 'Gestos simples',
+                        body: 'La navegaci\u00f3n entre temas se realiza con botones; no depende de arrastrar, pellizcar o dibujar trayectorias.'
+                    },
+                    {
+                        title: 'Orden l\u00f3gico',
+                        body: 'El foco avanza en el mismo orden visual: encabezado, navegaci\u00f3n, b\u00fasqueda, interacciones y enlaces.'
+                    },
+                    {
+                        title: '\u00c1reas de interacci\u00f3n',
+                        body: 'Los controles principales usan un \u00e1rea m\u00ednima de 48 por 48 p\u00edxeles para reducir pulsaciones accidentales.'
+                    }
+                ];
+
+                const normalizeText = (value) => {
+                    return String(value)
+                        .toLowerCase()
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '');
                 };
 
-                // Confirmación de acción (Punto 7)
-                const handleConfirm = () => {
-                    alert('✅ Acción procesada correctamente tras soltar el cursor (Up-event).');
+                const searchResults = computed(() => {
+                    const query = normalizeText(searchQuery.value.trim());
+
+                    if (!query) {
+                        return searchableItems;
+                    }
+
+                    return searchableItems.filter((item) => {
+                        const haystack = normalizeText(`${item.title} ${item.description} ${item.keywords}`);
+                        return haystack.includes(query);
+                    });
+                });
+
+                const searchStatus = computed(() => {
+                    if (!hasSearched.value) {
+                        return 'B\u00fasqueda no iniciada.';
+                    }
+
+                    const count = searchResults.value.length;
+                    return count === 1 ? '1 resultado encontrado.' : `${count} resultados encontrados.`;
+                });
+
+                const activeTopic = computed(() => topics[activeTopicIndex.value]);
+
+                const focusSection = (selector) => {
+                    nextTick(() => {
+                        const target = document.querySelector(selector);
+
+                        if (target) {
+                            target.setAttribute('tabindex', '-1');
+                            target.focus({ preventScroll: true });
+                            target.scrollIntoView({
+                                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
                 };
 
-                // Manejo del Modo Oscuro
+                const handleSearch = () => {
+                    hasSearched.value = true;
+                    nextTick(() => {
+                        if (resultsHeading.value) {
+                            resultsHeading.value.focus();
+                        }
+                    });
+                };
+
                 const toggleTheme = () => {
                     isDark.value = !isDark.value;
-                    if (isDark.value) {
-                        document.documentElement.classList.add('dark');
-                    } else {
-                        document.documentElement.classList.remove('dark');
+                    document.documentElement.classList.toggle('dark', isDark.value);
+                    nextTick(renderIcons);
+                };
+
+                const toggleMotion = () => {
+                    motionEnabled.value = !motionEnabled.value;
+                };
+
+                const previousTopic = () => {
+                    if (activeTopicIndex.value > 0) {
+                        activeTopicIndex.value -= 1;
                     }
                 };
 
-                // Detectar preferencia del sistema al montar
-                onMounted(() => {
-                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                        isDark.value = true;
-                        document.documentElement.classList.add('dark');
+                const nextTopic = () => {
+                    if (activeTopicIndex.value < topics.length - 1) {
+                        activeTopicIndex.value += 1;
                     }
+                };
+
+                const completeSafeAction = (message) => {
+                    pointerIsPending.value = false;
+                    pointerWasCanceled.value = false;
+                    completedActions.value += 1;
+                    pointerStatus.value = message;
+                };
+
+                const beginPointerAction = () => {
+                    pointerIsPending.value = true;
+                    pointerWasCanceled.value = false;
+                    pointerStatus.value = 'Suelte dentro de Confirmar acci\u00f3n segura para completar.';
+                };
+
+                const cancelPointerAction = () => {
+                    if (!pointerIsPending.value) {
+                        return;
+                    }
+
+                    pointerIsPending.value = false;
+                    pointerWasCanceled.value = true;
+                    pointerStatus.value = 'Acci\u00f3n cancelada antes de soltar.';
+                };
+
+                const completePointerAction = () => {
+                    ignoreNextClick.value = true;
+
+                    if (!pointerIsPending.value || pointerWasCanceled.value) {
+                        pointerIsPending.value = false;
+                        return;
+                    }
+
+                    completeSafeAction('Acci\u00f3n confirmada al soltar el puntero.');
+                };
+
+                const completeClickAction = (event) => {
+                    if (ignoreNextClick.value) {
+                        ignoreNextClick.value = false;
+                        return;
+                    }
+
+                    if (event.detail === 0) {
+                        completeSafeAction('Acci\u00f3n confirmada con teclado o tecnolog\u00eda de apoyo.');
+                        return;
+                    }
+
+                    completeSafeAction('Acci\u00f3n confirmada al soltar el puntero.');
+                };
+
+                onMounted(() => {
+                    isDark.value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    document.documentElement.classList.toggle('dark', isDark.value);
+                    renderIcons();
                 });
 
                 return {
-                    motionEnabled,
-                    searchQuery,
-                    isDark,
-                    toggleMotion,
+                    activeTopic,
+                    activeTopicIndex,
+                    beginPointerAction,
+                    cancelPointerAction,
+                    completeClickAction,
+                    completePointerAction,
+                    completedActions,
+                    focusSection,
                     handleSearch,
-                    handleConfirm,
-                    toggleTheme
-                }
+                    hasSearched,
+                    isDark,
+                    motionEnabled,
+                    navigationItems,
+                    nextTopic,
+                    pointerStatus,
+                    previousTopic,
+                    resultsHeading,
+                    searchQuery,
+                    searchResults,
+                    searchStatus,
+                    toggleMotion,
+                    toggleTheme,
+                    topics
+                };
             }
         }).mount('#app');
     </script>
