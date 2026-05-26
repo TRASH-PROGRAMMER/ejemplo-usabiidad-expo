@@ -335,8 +335,9 @@
     </div>
 
     <script>
+        // Variables reactivas y funciones de la aplicaci&oacute;n Vue
         const { createApp, computed, nextTick, onMounted, ref } = Vue;
-
+// funci&oacute;n para renderizar iconos de Lucide con atributos de accesibilidad
         const renderIcons = () => {
             if (window.lucide && typeof window.lucide.createIcons === 'function') {
                 window.lucide.createIcons({
@@ -347,8 +348,9 @@
                 });
             }
         };
-
+// Inicializacion de la aplicacion Vue con estado y comportamientos para la interfaz operable
         createApp({
+            // Configuracion de estados y comportamientos de la interfaz
             setup() {
                 const isDark = ref(false);
                 const motionEnabled = ref(true);
@@ -361,7 +363,7 @@
                 const pointerWasCanceled = ref(false);
                 const ignoreNextClick = ref(false);
                 const pointerStatus = ref('Sin acciones recientes.');
-
+// Definicion de los elementos de navegacion y busqueda de la interfaz
                 const navigationItems = [
                     {
                         href: '#seccion-ajustes',
@@ -396,7 +398,7 @@
                         keywords: 'enlaces proposito contexto texto descriptivo'
                     }
                 ];
-
+// Definicion de elementos de navegacion y busqueda que se pueden buscar
                 const searchableItems = [
                     ...navigationItems,
                     {
@@ -406,7 +408,7 @@
                         keywords: 'resumen wcag operable criterio pauta'
                     }
                 ];
-
+// Definicion de temas de la interfaz para demostrar navegacion secuencial y contenido relevante
                 const topics = [
                     {
                         title: 'Gestos simples',
@@ -421,42 +423,42 @@
                         body: 'Los controles principales usan un \u00e1rea m\u00ednima de 48 por 48 p\u00edxeles para reducir pulsaciones accidentales.'
                     }
                 ];
-
+// Funcion para normalizar el texto para la búsqueda, eliminando mayusculas, acentos y caracteres especiales
                 const normalizeText = (value) => {
                     return String(value)
                         .toLowerCase()
                         .normalize('NFD')
                         .replace(/[\u0300-\u036f]/g, '');
                 };
-
+// Funcion para filtrar los elementos de navegacion y busqueda por el texto de búsqueda
                 const searchResults = computed(() => {
                     const query = normalizeText(searchQuery.value.trim());
-
+// Si no hay consulta, devuelve todos los elementos de navegacion y busqueda como resultados de busqueda
                     if (!query) {
                         return searchableItems;
                     }
-
+// Filtra los elementos de navegacion y busqueda por el texto de búsqueda, buscando coincidencias en el título, descripción y palabras clave
                     return searchableItems.filter((item) => {
                         const haystack = normalizeText(`${item.title} ${item.description} ${item.keywords}`);
                         return haystack.includes(query);
                     });
                 });
-
+// Computed para generar el estado de la búsqueda, indicando si no se ha iniciado o cuántos resultados se han encontrado
                 const searchStatus = computed(() => {
                     if (!hasSearched.value) {
                         return 'B\u00fasqueda no iniciada.';
                     }
-
+// Calcula el número de resultados encontrados y devuelve el mensaje apropiado
                     const count = searchResults.value.length;
                     return count === 1 ? '1 resultado encontrado.' : `${count} resultados encontrados.`;
                 });
-
+// Computed para obtener el tema actual y devolverlo
                 const activeTopic = computed(() => topics[activeTopicIndex.value]);
-
+// Función para enfocar un elemento de navegación o búsqueda    
                 const focusSection = (selector) => {
                     nextTick(() => {
                         const target = document.querySelector(selector);
-
+// Si el selector coincide con un elemento de navegación o búsqueda, se enfoca en él y se desplaza suavemente hasta su posición
                         if (target) {
                             target.setAttribute('tabindex', '-1');
                             target.focus({ preventScroll: true });
@@ -467,7 +469,7 @@
                         }
                     });
                 };
-
+// Función para iniciar la búsqueda y enfocar el encabezado de resultados
                 const handleSearch = () => {
                     hasSearched.value = true;
                     nextTick(() => {
@@ -476,83 +478,84 @@
                         }
                     });
                 };
-
+// Función para alternar el modo oscuro
                 const toggleTheme = () => {
                     isDark.value = !isDark.value;
                     document.documentElement.classList.toggle('dark', isDark.value);
                     nextTick(renderIcons);
                 };
-
+// Función para activar o desactivar los sensores de movimiento
                 const toggleMotion = () => {
                     motionEnabled.value = !motionEnabled.value;
                 };
+// Función para cambiar al tema anterior o siguiente del panel operable
 
                 const previousTopic = () => {
                     if (activeTopicIndex.value > 0) {
                         activeTopicIndex.value -= 1;
                     }
                 };
-
+// Función para cambiar al tema anterior del panel operable
                 const nextTopic = () => {
                     if (activeTopicIndex.value < topics.length - 1) {
                         activeTopicIndex.value += 1;
                     }
                 };
-
+// Función para completar una acción segura, actualizando el estado y el mensaje de confirmación
                 const completeSafeAction = (message) => {
                     pointerIsPending.value = false;
                     pointerWasCanceled.value = false;
                     completedActions.value += 1;
                     pointerStatus.value = message;
                 };
-
+// Función para iniciar una acción segura, actualizando el estado y el mensaje de confirmación
                 const beginPointerAction = () => {
                     pointerIsPending.value = true;
                     pointerWasCanceled.value = false;
                     pointerStatus.value = 'Suelte dentro de Confirmar acci\u00f3n segura para completar.';
                 };
-
+// Función para cancelar una acción segura, actualizando el estado y el mensaje de confirmación
                 const cancelPointerAction = () => {
                     if (!pointerIsPending.value) {
                         return;
                     }
-
+// Si no hay una acción segura en curso, no hace nada
                     pointerIsPending.value = false;
                     pointerWasCanceled.value = true;
                     pointerStatus.value = 'Acci\u00f3n cancelada antes de soltar.';
                 };
-
+// Función para completar una acción segura, actualizando el estado y el mensaje de confirmación
                 const completePointerAction = () => {
                     ignoreNextClick.value = true;
-
+// Si no hay una acción segura en curso o si se ha cancelado, no hace nada
                     if (!pointerIsPending.value || pointerWasCanceled.value) {
                         pointerIsPending.value = false;
                         return;
                     }
-
+// Completa la acción segura al soltar el puntero
                     completeSafeAction('Acci\u00f3n confirmada al soltar el puntero.');
                 };
-
+// Función para completar una acción segura, actualizando el estado y el mensaje de confirmación
                 const completeClickAction = (event) => {
                     if (ignoreNextClick.value) {
                         ignoreNextClick.value = false;
                         return;
                     }
-
+// Si se ha pulsado una tecla, no hace nada
                     if (event.detail === 0) {
                         completeSafeAction('Acci\u00f3n confirmada con teclado o tecnolog\u00eda de apoyo.');
                         return;
                     }
-
+// Completa la acción segura al soltar el puntero
                     completeSafeAction('Acci\u00f3n confirmada al soltar el puntero.');
                 };
-
+// Configuración de estados y comportamientos de la interfaz
                 onMounted(() => {
                     isDark.value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
                     document.documentElement.classList.toggle('dark', isDark.value);
                     renderIcons();
                 });
-
+// Devuelve los estados y comportamientos de la interfaz para ser usados en el template
                 return {
                     activeTopic,
                     activeTopicIndex,
